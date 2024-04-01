@@ -11,7 +11,7 @@ def euclidean_distance(x,y):
 #modified fit_kmeans for question 2d that returns inertia.
 def fit_kmeans_inertia(dataset, n_clusters):
     #Filter data 
-    data, _ = dataset
+    data, _, _ = dataset
     
     #Standardize scale with StandardScaler()
     scaler = StandardScaler()

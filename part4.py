@@ -150,7 +150,7 @@ def compute():
     """
 
     # dct is the function described above in 4.C
-    dct = answers["4A: modified function"] = fit_modified
+    dct = answers["4C: modified function"] = fit_modified
 
     fig,axes = plt.subplots(nrows=4,ncols=5,figsize=(20,16)) 
     for i, linkage in enumerate(linkage_types):

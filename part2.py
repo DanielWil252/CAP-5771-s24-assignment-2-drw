@@ -38,7 +38,7 @@ In this task you will explore different methods to find a good value for k
 
 def fit_kmeans(dataset, n_clusters):
     # Unpack the dataset into data and labels (even though labels are not used here)
-    data, _ = dataset
+    data, _, _= dataset
     
     #Standardize scale with StandardScaler()
     scaler = StandardScaler()
@@ -67,7 +67,7 @@ def compute():
     """
     A.	Call the make_blobs function with following parameters :(center_box=(-20,20), n_samples=20, centers=5, random_state=12).
     """
-    blob = make_blobs(center_box=(-20,20), n_samples=20, centers=5,random_state=12)
+    blob = make_blobs(center_box=(-20,20), n_samples=20, centers=5,random_state=12,return_centers=True)
     # dct: return value from the make_blobs function in sklearn, expressed as a list of three numpy arrays
     dct = answers["2A: blob"] = list(blob) 
 
