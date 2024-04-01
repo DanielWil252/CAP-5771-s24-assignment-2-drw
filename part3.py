@@ -27,8 +27,16 @@ Recall from lecture that agglomerative hierarchical clustering is a greedy itera
 # the question asked.
 
 
-def data_index_function():
-    return None
+#function to find the single link dissimilarity for question 3d (nearest neightbor clustering).
+def data_index_function(data, set1, set2):
+    min_distance = float('inf')
+    for i in set1:
+        for j in set2:
+            distance = u.euclidean_distance(data[i], data[j])
+            if distance < min_distance:
+                min_distance = distance
+    return min_distance
+
 
 
 def compute():
@@ -37,30 +45,44 @@ def compute():
     """
     A.	Load the provided dataset “hierachal_toy_data.mat” using the scipy.io.loadmat function.
     """
-
+    toy_data = io.loadmat("hierarchical_toy_data.mat")
+    toy_data_X = np.array(toy_data['X'])
+    toy_data_y = np.array(toy_data['y'])
+    #print(toy_data_y)
     # return value of scipy.io.loadmat()
-    answers["3A: toy data"] = {}
-
+    answers["3A: toy data"] = toy_data
+    #print(toy_data)
     """
     B.	Create a linkage matrix Z, and plot a dendrogram using the scipy.hierarchy.linkage and scipy.hierachy.dendrogram functions, with “single” linkage.
     """
-
+    Z = linkage(toy_data_X,method='single')
+    
+    #plot dendrogram
+    plt.figure()
+    toy_data_dendrogram = dendrogram(Z)
+    plt.title("Dendrogram of Toy Data")
+    plt.xlabel("index")
+    plt.ylabel("distances")
+    #plt.show()
+    #print(Z) 
+    #print(u.find_merge_iteration(Z,[8,2,13],[1,9]))
     # Answer: NDArray
-    answers["3B: linkage"] = np.zeros(1)
+    answers["3B: linkage"] = Z
 
     # Answer: the return value of the dendogram function, dicitonary
-    answers["3B: dendogram"] = {}
+    answers["3B: dendogram"] = toy_data_dendrogram
 
     """
     C.	Consider the merger of the cluster corresponding to points with index sets {I={8,2,13}} J={1,9}}. At what iteration (starting from 0) were these clusters merged? That is, what row does the merger of A correspond to in the linkage matrix Z? The rows count from 0. 
     """
 
     # Answer type: integer
-    answers["3C: iteration"] = -1
+    answers["3C: iteration"] = 4
 
     """
     D.	Write a function that takes the data and the two index sets {I,J} above, and returns the dissimilarity given by single link clustering using the Euclidian distance metric. The function should output the same value as the 3rd column of the row found in problem 2.C.
     """
+    #print(data_index_function(Z,[8,2,13],[1,9]))
     # Answer type: a function defined above
     answers["3D: function"] = data_index_function
 
@@ -68,16 +90,23 @@ def compute():
     E.	In the actual algorithm, deciding which clusters to merge should consider all of the available clusters at each iteration. List all the clusters as index sets, using a list of lists, 
     e.g., [{0,1,2},{3,4},{5},{6},…],  that were available when the two clusters in part 2.D were merged.
     """
-
+    clusters = {i: [i] for i in range(len(toy_data_X))}
+    # 4 iterations.
+    for i, row in enumerate(Z[:4]):
+        cluster_1,cluster_2 = int(row[0]), int(row[1])
+        new_key = len(toy_data_X)+i
+        clusters[new_key] = clusters.pop(cluster_1, []) + clusters.pop(cluster_2, [])
+    
+    # print(f"Clusters after merges: {list(clusters.values())}") result in answer.
     # List the clusters. the [{0,1,2}, {3,4}, {5}, {6}, ...] represents a list of lists.
-    answers["3E: clusters"] = [{0, 0}, {0, 0}]
+    answers["3E: clusters"] = [{0},{3},{4},{5},{7},{10},{11},{12},{8,2,13},{1,9},{6,14}]
 
     """
     F.	Single linked clustering is often criticized as producing clusters where “the rich get richer”, that is, where one cluster is continuously merging with all available points. Does your dendrogram illustrate this phenomenon?
     """
 
     # Answer type: string. Insert your explanation as a string.
-    answers["3F: rich get richer"] = ""
+    answers["3F: rich get richer"] = "The dendrogram I made seems to illustrate this phenomenon. Not only are the seperate groups very different in shape and distance (in regards to merges), but there is also a prominent 'chaining' pattern in the dendrogram where there are a lot of short-distance merges eventually combining the groups into one (where the 'rich get richer')"
 
     return answers
 
